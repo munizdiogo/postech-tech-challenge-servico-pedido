@@ -1,6 +1,6 @@
 # Tech Challenge - Sistema de Lanchonete - Serviço: Pedido
 
-Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete para o serviço: Pedido que é responsável por criar novos pedidos.
+Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete para o serviço: "Pedido" que é responsável por criar novos pedidos.
 
 
 ## Infraestrutura
