@@ -12,6 +12,7 @@
 /build/
 /out/
 config.php
-/src/pagamento/External/vendor
-/src/pagamento/External/composer.lock
 /composer.lock
+/coverage
+/config.php
+/.phpunit.result.cache
