@@ -3,7 +3,6 @@
 // RESPONSÁVEL POR RETORNAR AS INFORMAÇÕES NECESSÁRIAS PARA MONTAR UM PEDIDO.
 
 header('Content-Type: application/json; charset=utf-8');
-require "config.php";
 require "./utils/RespostasJson.php";
 require "./src/External/MySqlConnection.php";
 require "./src/Controllers/PedidoController.php";
