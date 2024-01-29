@@ -1,10 +1,10 @@
-# Tech Challenge - Sistema de Lanchonete
+# Tech Challenge - Sistema de Lanchonete - Serviço: Pedido
 
-Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete.
+Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete para o serviço: Pedido que é responsável por criar novos pedidos.
 
 
 ## Infraestrutura
-Toda a infraestrutura (cluster, banco de dados, imagem, etc) está vinculada aos serviços AWS, e é criada através dos workflows com o nome "Pipeline" dentro do Github Actions dos seguintes repositórios: 
+Toda a infraestrutura (cluster, banco de dados, imagem, etc) está vinculada aos serviços AWS, e é criada através dos workflows com o nome "pipepine-pedido" dentro do Github Actions dos seguintes repositórios: 
 
 **Infraestrutura da Aplicação:**  
 https://github.com/munizdiogo/postech-tech-challenge-infra-kubernetes-terraform
