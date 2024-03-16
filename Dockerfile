@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install git zip unzip -y && apt-get install -y \
     && docker-php-ext-install -j$(nproc) \
     gd \
     mysqli \
-    pdo_mysql
+    pdo_mysql \
+    sockets
 
 # Configurações do Apache
 RUN a2enmod rewrite
