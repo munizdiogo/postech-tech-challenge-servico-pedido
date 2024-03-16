@@ -3,11 +3,13 @@
 namespace Pedido\Gateways;
 
 require "./src/Interfaces/Gateways/PedidoGatewayInterface.php";
+require "./src/Controllers/RabbitMqController.php";
 
 use Pedido\Interfaces\DbConnection\DbConnectionInterface;
 use Pedido\Interfaces\Gateways\PedidoGatewayInterface;
 use Pedido\Entities\Pedido;
 use PDOException;
+use RabbitMqController;
 
 class PedidoGateway implements PedidoGatewayInterface
 {
@@ -22,20 +24,22 @@ class PedidoGateway implements PedidoGatewayInterface
 
     public function cadastrar(Pedido $pedido)
     {
-        $parametros = [
+        $dadosParaCriacaoPedido = [
             "data_criacao" => date('Y-m-y h:s:i'),
             "status" => $pedido->getStatus(),
             "cpf" => $pedido->getCPF(),
             "pagamento_status" => "pendente",
         ];
 
-        $idPedido = $this->repositorioDados->inserir($this->nomeTabelaPedidos, $parametros);
+        $idPedido = $this->repositorioDados->inserir($this->nomeTabelaPedidos, $dadosParaCriacaoPedido);
 
         if (empty($idPedido)) {
             return false;
         }
 
         $produtos = $pedido->getProdutos();
+
+        $valorTotal = 0;
 
         foreach ($produtos as $produto) {
             $parametros = [
@@ -48,11 +52,22 @@ class PedidoGateway implements PedidoGatewayInterface
                 "produto_categoria" => $produto["categoria"]
             ];
 
+            $valorTotal += $produto["preco"];
+
             $cadastrarProdutoPedido = $this->repositorioDados->inserir($this->nomeTabelaPedidosProdutos, $parametros);
             if (!$cadastrarProdutoPedido) {
                 throw new \Exception("Ocorreu um erro ao salvar um item do pedido.", 400);
             }
         }
+
+        $rabbitMqController = new RabbitMqController();
+        $mensagem = [
+            "idPedido" => $idPedido,
+            "cpf" => $dadosParaCriacaoPedido["cpf"],
+            "valor" => $valorTotal
+        ];
+        $rabbitMqController->enviarMsgParaQueue('pedidos', json_encode($mensagem));
+
         return !empty($idPedido) ? (int)$idPedido : false;
     }
 
@@ -169,6 +184,7 @@ class PedidoGateway implements PedidoGatewayInterface
         $resultado = $this->repositorioDados->atualizar($this->nomeTabelaPedidos, $id, $parametros);
         return $resultado;
     }
+    
     public function obterStatusPorIdPedido($id): array
     {
         $campos = ["id", "pagamento_status"];
@@ -191,7 +207,7 @@ class PedidoGateway implements PedidoGatewayInterface
             ]
         ];
         $resultado = $this->repositorioDados->buscarPorParametros($this->nomeTabelaPedidos, $campos, $parametros);
-     
+
         return $resultado;
     }
 }
